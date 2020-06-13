@@ -28,4 +28,16 @@ export class UserRepository extends Repository<User> {
     private async hashPassword(password: string, salt:string){
         return bcrypt.hash(password, salt);
     }
+
+    async validateUserPassword(authCredentialsDto: AuthCredentialsDto): Promise<string>{
+        const { password, username } = authCredentialsDto;
+        
+        const user = await this.findOne({ username });
+
+        if (user && await user.validatePassword(password)) {
+            return user.username;
+        } else {
+            return null;
+        }
+    }
 }

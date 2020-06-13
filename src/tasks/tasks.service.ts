@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TaskRepository } from './task.repository';
 import { TaskEntity } from './task.entity';
 import { TaskStatus } from './task-status.enum';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -13,8 +14,8 @@ export class TasksService {
         private taskrepository: TaskRepository
     ){}
 
-   async getTasks(filterDto:GetTasksFilterDto): Promise<TaskEntity[]>{
-        return await this.taskrepository.getTasks(filterDto);
+   async getTasks(filterDto:GetTasksFilterDto, user: User): Promise<TaskEntity[]>{
+        return await this.taskrepository.getTasks(filterDto, user);
     }
    async getTaskById(id: number):Promise<TaskEntity>{
         const task = await this.taskrepository.findOne(id);
@@ -31,8 +32,8 @@ export class TasksService {
        }
      
    }
-   async createTask(createTaskDto: CreateTaskDto): Promise<TaskEntity> {
-       return this.taskrepository.createTask(createTaskDto)
+   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<TaskEntity> {
+       return this.taskrepository.createTask(createTaskDto, user)
    }
 
    async updateTaskById(id: number, status: TaskStatus): Promise<TaskEntity>{
